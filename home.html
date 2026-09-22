@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}الرئيسية - شحنك{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>أهلاً بيك 👋</h1>
+    <p class="subtitle">اختار اللعبة أو الخدمة العايز تشحنها</p>
+
+    <div class="wallet-badge">
+        <div class="label">رصيد المحفظة</div>
+        <div class="amount">{{ "%.2f"|format(wallet_balance) }} ج.س</div>
+    </div>
+
+    <button type="button" disabled style="opacity:0.6;">شحن الرصيد (قريبًا)</button>
+</div>
+{% endblock %}
