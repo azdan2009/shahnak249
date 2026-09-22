@@ -1,8 +1,9 @@
 import os
-from flask import Flask, jsonify
-from flask_login import LoginManager
+from flask import Flask, jsonify, render_template
+from flask_login import LoginManager, login_required, current_user
+from flask_wtf.csrf import CSRFProtect
 from config import Config
-from models import db, User, AdminUser
+from models import db, User, AdminUser, Wallet
 
 
 def create_app():
@@ -10,9 +11,13 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
+    CSRFProtect(app)
 
     login_manager = LoginManager()
     login_manager.init_app(app)
+    login_manager.login_view = "auth.login"
+    login_manager.login_message = "لازم تسجل دخول الأول عشان توصل للصفحة دي"
+    login_manager.login_message_category = "error"
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -22,13 +27,24 @@ def create_app():
             return AdminUser.query.get(int(_id))
         return User.query.get(int(_id))
 
-    @app.route("/")
-    def home():
+    # تسجيل مسارات الدخول والتسجيل
+    from auth import auth_bp
+    app.register_blueprint(auth_bp)
+
+    @app.route("/api")
+    def api_status():
         return jsonify({
             "project": "شحنك",
             "status": "الخادم شغال ✅",
             "tagline": "كل شحناتك في مكان واحد"
         })
+
+    @app.route("/")
+    @login_required
+    def home():
+        wallet = Wallet.query.filter_by(user_id=current_user.id).first()
+        balance = float(wallet.balance) if wallet else 0
+        return render_template("home.html", wallet_balance=balance)
 
     @app.route("/health")
     def health():
