@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}إنشاء حساب - شحنك{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>أهلاً بيك 👋</h1>
+    <p class="subtitle">أنشئ حسابك في شحنك وابدأ الشحن فورًا</p>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <label for="name">الاسم</label>
+        <input type="text" id="name" name="name" placeholder="اسمك الكامل" required>
+
+        <label for="email">البريد الإلكتروني</label>
+        <input type="email" id="email" name="email" placeholder="example@email.com" required>
+
+        <label for="password">كلمة المرور</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="new-password">
+
+        <button type="submit">إنشاء حساب</button>
+    </form>
+
+    <div class="switch-link">
+        عندك حساب بالفعل؟ <a href="{{ url_for('auth.login') }}">سجّل دخولك</a>
+    </div>
+</div>
+{% endblock %}
